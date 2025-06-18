@@ -4,6 +4,8 @@ export class OnboardingController {
     static async handleMessage(req: Request, res: Response) {
       try {
         const { input, session_id } = req.body;
+        console.log(input,session_id);
+        
         const result = await OnboardingService.handleInput(session_id || null, input);
         res.json(result);
       } catch (err) {
@@ -14,6 +16,8 @@ export class OnboardingController {
     static async start(req: Request, res: Response) {
         try {
           const { email, full_name } = req.body;
+          console.log("email full_name",full_name,email);
+          
           if (!email || !full_name) {
              res.status(400).json({ error: "email and full_name are required" });
           }

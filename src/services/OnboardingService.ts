@@ -30,6 +30,7 @@ export class OnboardingService {
   
       if (!sessionId) {
         const newSessionId = await OnboardingDao.createSession();
+        
         return {
           session_id: newSessionId,
           message: "Welcome! Let's get you set up. What's your profession?"
@@ -38,6 +39,8 @@ export class OnboardingService {
   
       // eslint-disable-next-line prefer-const
       session = await OnboardingDao.getSession(sessionId);
+      console.log("session from service",session);
+      
       const { step } = session;
   
       if (step === "profession") {

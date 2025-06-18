@@ -4,12 +4,12 @@ import { ChatbotService } from '../services/chatbotService';
 export class ChatbotController {
   static async generatePost(req: Request, res: Response) {
     try {
-      const userId = req.body.user_id;
+      const session_id = req.body.session_id;
       const input = req.body.input;
  // Log inputs
- console.log("Received userId:", userId);
+ console.log("Received userId:", session_id);
  console.log("Received input:", input);
-      const result = await ChatbotService.generatePost(userId, input);
+      const result = await ChatbotService.generatePost(session_id, input);
       res.status(201).json(result);
     } catch (error) {
       res.status(500).json({ error: (error as Error).message });

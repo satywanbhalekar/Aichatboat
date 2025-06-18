@@ -3,49 +3,66 @@ import { ProfileDao } from '../dao/profileDao';
 import { PostRequest } from '../interface/index.interface';
 // import { OpenAIClient } from '../utils/openaiClient';
 import { generatePostWithGemini } from '../utils/geminiClient';
-
+//import { generateImageFromPrompt } from '../utils/img';
 export class ChatbotService {
-static async generatePost(userId: string, input: string): Promise<PostRequest> {
-    const profile = await ProfileDao.getProfileById(userId);
+static async generatePost(session_id: string, input: string): Promise<PostRequest> {
+    //const profile = await ProfileDao.getProfileById(userId);
+    const profile = await ProfileDao.getProfileBysession_id(session_id);
 
     if (!profile) {
       throw new Error('User profile not found.');
     }
 
-    // Construct prompt with user profile context
-//     const prompt = `Create 3 engaging social media post variations for a user with the following details:
-// Profession: ${profile.profession}
-// Interests: ${profile.interests?.join(', ') || 'N/A'}
-// Input: "${input}"`;
+// const prompt = `
+// A user is a ${profile.profession || "content creator"} interested in ${profile.interests?.join(", ") || "social media growth"}.
+// They want to post this update: "${input}"
+
+// Generate 3 **distinct** and **engaging** social media post variations:
+// 1. 🔥 Bold & Motivational
+// 2. 💼 Professional & Career-Oriented
+// 3. 😄 Casual & Fun
+
+// Each post should:
+// - Be under 300 characters
+// - Include relevant emojis and 3-5 trending hashtags
+// - Be personalized to reflect the user's tone and interests
+// - Avoid repeating the same phrases
+// - add image in it or genrate image 
+
+// Respond only with a valid JSON object in this format (no markdown, no explanation):
+// {
+//   "variant1": "...",
+//   "variant2": "...",
+//   "variant3": "..."
+// }
+// `;
 
 const prompt = `
 A user is a ${profile.profession || "content creator"} interested in ${profile.interests?.join(", ") || "social media growth"}.
 They want to post this update: "${input}"
 
-Generate 3 **distinct** and **engaging** social media post variations:
-1. 🔥 Bold & Motivational
-2. 💼 Professional & Career-Oriented
-3. 😄 Casual & Fun
+Generate the following as a valid JSON object:
+- "variant1": a creative image generation prompt that best visualizes the post idea.
+- "variant2": an engaging social media caption for the post (under 300 characters) using relevant emojis.
+- "variant3": 3-5 trending hashtags that match the post and user's interests.
 
-Each post should:
-- Be under 300 characters
-- Include relevant emojis and 3-5 trending hashtags
-- Be personalized to reflect the user's tone and interests
-- Avoid repeating the same phrases
-- add image in it or genrate image 
-
-Respond only with a valid JSON object in this format (no markdown, no explanation):
+Respond with a valid JSON object only (no markdown or explanation), in this format:
 {
-  "variant1": "...",
-  "variant2": "...",
-  "variant3": "..."
+  "variant1": "image prompt",
+  "variant2": "caption with emojis",
+  "variant3": "#hashtag1 #hashtag2 #hashtag3"
 }
 `;
 
 
-    const generatedPosts = await generatePostWithGemini(prompt);
 
-    const postRecord = await PostDao.savePostRequest(userId, input, generatedPosts);
+
+    const generatedPosts = await generatePostWithGemini(prompt);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+//const imageBuffer = await generateImageFromPrompt(generatedPosts.variant1);
+//console.log("imgbuffer",imageBuffer);
+
+    const postRecord = await PostDao.savePostRequest(session_id, input, generatedPosts);
     return postRecord;
   }
 

@@ -3,7 +3,8 @@ import cors from 'cors';
 import helmet from "helmet";
 import chatbotRoutes from './routes/chatbotRoutes';
 import profileRoutes from './routes/profileRoutes';
-import imageGenRoutes from './routes/imageGenRoutes'; // ✅ import the router
+import imageGenRoutes from './routes/imageGenRoutes'; 
+import onboardingRoutes from './routes/onboardingRoutes'; 
 const app = express();
 const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(",") || [];
  
@@ -65,6 +66,7 @@ app.use(express.json());
 app.use('/api/profile', profileRoutes);
 app.use('/api/chatbot', chatbotRoutes);
 app.use('/api/image', imageGenRoutes);
+app.use('/api/onboard', onboardingRoutes);
 //app.use("/api/v1/thoughtspot", authenticateJWT, thoughtspotRoutes);
 
 

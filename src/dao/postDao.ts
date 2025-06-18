@@ -3,7 +3,7 @@ import { PostRequest } from '../interface/index.interface';
 
 export class PostDao {
   static async savePostRequest(
-    userId: string,
+    session_id: string,
     input: string,
     generatedPosts: Record<string, string>
   ): Promise<PostRequest> {
@@ -11,7 +11,7 @@ export class PostDao {
       .from('post_requests')
       .insert([
         {
-          user_id: userId,
+          session_id: session_id,
           raw_input: input,
           generated_posts: generatedPosts,
         },
