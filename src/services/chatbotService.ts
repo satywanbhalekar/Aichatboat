@@ -5,28 +5,6 @@ import { PostRequest } from '../interface/index.interface';
 import { generatePostWithGemini } from '../utils/geminiClient';
 
 export class ChatbotService {
-//   static async generatePost(userId: string, input: string): Promise<PostRequest> {
-//     const profile = await ProfileDao.getProfileById(userId);
-
-//     // Generate prompt based on input + profile
-//     const prompt = `Create 3 engaging social media post variations for a user with the following details:
-//     Profession: ${profile.profession}
-//     Interests: ${profile.interests?.join(', ')}
-//     Input: ${input}`;
-
-//     const aiResponse = await OpenAIClient.generatePost(prompt);
-
-//     const generatedPosts: Record<string, string> = {
-//         variant1: aiResponse.choices[0]?.message?.content ?? '',
-//         variant2: aiResponse.choices[1]?.message?.content ?? '',
-//         variant3: aiResponse.choices[2]?.message?.content ?? '',
-//       };
-      
-
-//     const postRecord = await PostDao.savePostRequest(userId, input, generatedPosts);
-//     return postRecord;
-//   }
-
 static async generatePost(userId: string, input: string): Promise<PostRequest> {
     const profile = await ProfileDao.getProfileById(userId);
 

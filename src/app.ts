@@ -6,7 +6,7 @@ import profileRoutes from './routes/profileRoutes';
 import imageGenRoutes from './routes/imageGenRoutes'; // ✅ import the router
 const app = express();
 const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(",") || [];
-
+ 
 app.use(cors({
   origin: (origin, callback) => {
     if (!origin || allowedOrigins.includes(origin)) {
