@@ -70,7 +70,9 @@ export class OnboardingService {
       const newSessionId = await OnboardingDao.createSessionWithEmail(email, full_name, password);
       return {
         session_id: newSessionId,
-        message: `Welcome ${full_name}! Let’s begin your onboarding. What's your profession?`
+        full_name:full_name,
+       // message: `Welcome ${full_name}! Let’s begin your onboarding.`
+       massage:"success"
       };
     }
     
