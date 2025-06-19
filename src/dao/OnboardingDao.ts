@@ -28,7 +28,20 @@ export class OnboardingDao {
       if (error && error.code !== 'PGRST116') throw new Error(error.message);
       return data;
     }
-    
+    static async createSessionWithEmaillogin(email: string, password: any): Promise<string> {
+      const { data, error } = await supabase
+        .from("onboarding_sessions")
+        .insert({
+          email,
+          password,
+          step: 'profession'
+        })
+        .select("session_id")
+        .single();
+  
+      if (error) throw new Error(error.message);
+      return data.session_id;
+    }
 
       static async createSessionWithEmail(email: string, full_name: string, password: any): Promise<string> {
         const { data, error } = await supabase

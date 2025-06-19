@@ -13,6 +13,7 @@ static async generatePost(session_id: string, input: string): Promise<PostReques
     if (!profile) {
       throw new Error('User profile not found.');
     }
+
 const prompt = `
 A user is a ${profile.profession || "content creator"} interested in ${profile.interests?.join(", ") || "social media growth"}.
 They want to post this update: "${input}"
@@ -36,7 +37,7 @@ console.log("🔍 Image Prompt:", generatedPosts.variant1);
 console.log("🧪 Gemini Output:", generatedPosts);
 
 //const imageBuffer = await generateImageFromStability(generatedPosts.variant1);
-const imageBuffer = await generateImageFromStability(generatedPosts.variant1, {
+const imageBuffer = await generateImageFromStability(input, {
   width: 1024,
   height: 1024,
   steps: 30,

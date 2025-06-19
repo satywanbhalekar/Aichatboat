@@ -26,6 +26,56 @@ export class OnboardingService {
     //     };
     //   }
 
+    static async startSessionforlogin(email: string, password: string) {
+      // Step 1: Check if email exists regardless of password
+      const { data: emailCheckData, error: emailCheckError } = await supabase
+        .from("onboarding_sessions")
+        .select("*")
+        .eq("email", email)
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .single();
+    
+      if (emailCheckError && emailCheckError.code !== 'PGRST116') {
+        throw new Error(emailCheckError.message);
+      }
+    
+      // Step 2: Email exists
+      if (emailCheckData) {
+        console.log(emailCheckData);
+        console.log(password);
+        
+        if (emailCheckData.password === password) {
+          // ✅ Password match: login
+          if (emailCheckData.step === 'complete') {
+            return {
+              session_id: emailCheckData.session_id,
+              message: `Welcome back, ${emailCheckData.full_name || 'User'}! You’re already onboarded.`
+            };
+          } else {
+            return {
+              session_id: emailCheckData.session_id,
+              message: `Welcome back, ${emailCheckData.full_name || 'User'}! Let’s continue onboarding. Your current step is: ${emailCheckData.step}`
+            };
+          }
+        } else {
+          // ❌ Password doesn't match
+          return {
+            error: "Invalid credentials"
+          };
+        }
+      }
+    
+      // Step 3: Email is new — create onboarding session
+      const newSessionId = await OnboardingDao.createSessionWithEmaillogin(email, password);
+      return {
+        session_id: newSessionId,
+       // message: `Welcome ${full_name}! Let’s begin your onboarding.`
+       massage:"success"
+      };
+    }
+
+
     static async startSession(email: string, full_name: string, password: string) {
       // Step 1: Check if email exists regardless of password
       const { data: emailCheckData, error: emailCheckError } = await supabase
@@ -95,6 +145,7 @@ export class OnboardingService {
       }
     
       // Step 1: Get session
+      // eslint-disable-next-line prefer-const
       session = await OnboardingDao.getSession(sessionId);
       console.log("📦 Existing session:", session);
     

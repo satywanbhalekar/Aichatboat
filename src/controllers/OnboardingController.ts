@@ -37,20 +37,36 @@ export class OnboardingController {
     }
     
 
-    static async start(req: Request, res: Response) {
+    static async login(req: Request, res: Response) {
         try {
-          const { email, full_name,password } = req.body;
-          console.log("email full_name",full_name,email,password);
+          const { email,password } = req.body;
+          console.log("email full_name",email,password);
           
-          // if (!email || !full_name || !password) {
-          //    res.status(400).json({ error: "email and full_name ,password are required" });
-          // }
+          if (!email  || !password) {
+             res.status(400).json({ error: "email and password are required" });
+          }
     
-          const result = await OnboardingService.startSession(email, full_name,password);
+          const result = await OnboardingService.startSessionforlogin(email,password);
           res.json(result);
         } catch (err) {
           res.status(500).json({ error: (err as Error).message });
         }
       }
+
+    static async signup(req: Request, res: Response) {
+      try {
+        const { email, full_name,password } = req.body;
+        console.log("email full_name",full_name,email,password);
+        
+        if (!email || !full_name || !password) {
+           res.status(400).json({ error: "email and full_name ,password are required" });
+        }
+  
+        const result = await OnboardingService.startSession(email, full_name,password);
+        res.json(result);
+      } catch (err) {
+        res.status(500).json({ error: (err as Error).message });
+      }
+    }
   }
   
