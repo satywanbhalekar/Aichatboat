@@ -32,9 +32,20 @@ Respond with a valid JSON object only (no markdown or explanation), in this form
 const generatedPosts = await generatePostWithGemini(prompt);
 
 // After generating post content...
-const imageBuffer = await generateImageFromStability(generatedPosts.variant1);
+console.log("🔍 Image Prompt:", generatedPosts.variant1);
+console.log("🧪 Gemini Output:", generatedPosts);
+
+//const imageBuffer = await generateImageFromStability(generatedPosts.variant1);
+const imageBuffer = await generateImageFromStability(generatedPosts.variant1, {
+  width: 1024,
+  height: 1024,
+  steps: 30,
+  guidance_scale: 7,
+  negative_prompt: "blurry, low quality, distorted"
+});
+
 console.log("imgbuffer",imageBuffer);
-    const postRecord = await PostDao.savePostRequest(session_id, input, generatedPosts);
+    const postRecord = await PostDao.savePostRequest(session_id, input, generatedPosts,imageBuffer);
     return postRecord;
 }
 

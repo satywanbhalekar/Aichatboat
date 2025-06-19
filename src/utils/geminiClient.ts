@@ -105,10 +105,9 @@ export async function generatePostWithGemini(prompt: string): Promise<Record<str
 
     let text = response.data.candidates?.[0]?.content?.parts?.[0]?.text || '';
 
-    // Sanitize markdown-style code block if present
+    // Remove markdown formatting if exists
     text = text.replace(/```json|```/g, '').trim();
-
-    // Attempt JSON parse
+    
     const parsed = JSON.parse(text);
 
     // Validate structure

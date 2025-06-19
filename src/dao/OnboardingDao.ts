@@ -2,25 +2,41 @@ import {supabase} from '../config/db';
 import { UserProfile } from '../interface/index.interface';
 export class OnboardingDao {
 
-    static async findSessionByEmail(email: string) {
-        const { data, error } = await supabase
-          .from("onboarding_sessions")
-          .select("*")
-          .eq("email", email)
-          .order("created_at", { ascending: false })
-          .limit(1)
-          .single();
+    // static async findSessionByEmail(email: string, password: any) {
+    //     const { data, error } = await supabase
+    //       .from("onboarding_sessions")
+    //       .select("*")
+    //       .eq("email","password", email,password)
+    //       .order("created_at", { ascending: false })
+    //       .limit(1)
+    //       .single();
     
-        if (error && error.code !== 'PGRST116') throw new Error(error.message);
-        return data;
-      }
+    //     if (error && error.code !== 'PGRST116') throw new Error(error.message);
+    //     return data;
+    //   }
     
-      static async createSessionWithEmail(email: string, full_name: string): Promise<string> {
+    static async findSessionByEmail(email: string, password: string) {
+      const { data, error } = await supabase
+        .from("onboarding_sessions")
+        .select("*")
+        .eq("email", email)
+        .eq("password", password)
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .single();
+    
+      if (error && error.code !== 'PGRST116') throw new Error(error.message);
+      return data;
+    }
+    
+
+      static async createSessionWithEmail(email: string, full_name: string, password: any): Promise<string> {
         const { data, error } = await supabase
           .from("onboarding_sessions")
           .insert({
             email,
             full_name,
+            password,
             step: 'profession'
           })
           .select("session_id")

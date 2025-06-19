@@ -4,7 +4,8 @@ import axios from 'axios';
 const STABILITY_API_URL = 'https://api.stability.ai/v1/generation/stable-diffusion-xl-1024-v1-0/text-to-image';
 const API_KEY = process.env.STABILITY_API_KEY;
 
-export async function generateImageFromStability(prompt: string): Promise<Buffer> {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export async function generateImageFromStability(prompt: string, p0: { width: number; height: number; steps: number; guidance_scale: number; negative_prompt: string; }): Promise<Buffer> {
   if (!API_KEY) {
     throw new Error('STABILITY_API_KEY not set in environment');
   }
@@ -17,8 +18,8 @@ export async function generateImageFromStability(prompt: string): Promise<Buffer
         { text: "blurry, bad quality, distorted", weight: -1 },
       ],
       cfg_scale: 7,
-      height: 512,
-      width: 512,
+      height: 1024,
+      width: 1024,
       steps: 30,
       samples: 1,
     },
