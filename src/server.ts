@@ -1,6 +1,6 @@
 import app from "./app";
 import env from "./config/env";
-//import { generateImageFromStability } from "./utils/stabilityClient";
+import { generateImageFromPrompt } from "./utils/img";
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 // const interval = setInterval(async () => {
@@ -26,6 +26,16 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 //     console.error("Image generation error:", (err as Error).message);
 //   }
 // }, 10000); // ⏱️ safer: call once every 10 seconds to avoid API rate limits
+
+// setInterval(() => {
+//   generateImageFromPrompt("ganesh")
+//   .then((imgBuffer) => {
+//     console.log("Image Buffer received:", imgBuffer);
+//   })
+//   .catch((error) => {
+//     console.error(error);
+//   });
+// }, 1000);
 
 app.listen(env.PORT || 3010, () => {
   console.log(`Server running on port ${env.PORT}`);

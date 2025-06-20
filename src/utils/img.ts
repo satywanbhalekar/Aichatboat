@@ -1,26 +1,38 @@
-// import axios from 'axios';
+import axios from 'axios';
 
-// export async function generateImageFromPrompt(prompt: string): Promise<Buffer> {
-//   const HF_TOKEN = process.env.HF_TOKEN;
-//   const modelURL = 'https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-2';
+export async function generateImageFromPrompt(prompt: string): Promise<Buffer> {
+  const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 
-//   const response = await axios.post(
-//     modelURL,
-//     { inputs: prompt },
-//     {
-//       headers: {
-//         Authorization: `Bearer ${HF_TOKEN}`,
-//         Accept: 'application/json',
-//         'Content-Type': 'application/json',
-//       },
-//       responseType: 'arraybuffer',
-//     }
-//   );
+  // ✅ Correct Model URL
+  const modelURL = 'https://generativelanguage.googleapis.com/v1beta2/models/imagegenerator:generate';
 
-//   return Buffer.from(response.data);
-// }
+  const response = await axios.post(
+    `${modelURL}?key=${GEMINI_API_KEY}`, // Append your API key
+    {
+      prompt: {
+        text: prompt,
+      },
+    },
+    {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      responseType: 'arraybuffer',
+    }
+  );
 
-// generateImageFromPrompt("ganesh")
+  return Buffer.from(response.data);
+}
+
+// Usage example:
+generateImageFromPrompt("ganesh")
+  .then((imgBuffer) => {
+    console.log("Image Buffer received:", imgBuffer);
+  })
+  .catch((error) => {
+    console.error(error);
+  });
 
 
 

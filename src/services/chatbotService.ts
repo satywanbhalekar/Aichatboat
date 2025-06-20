@@ -21,7 +21,7 @@ They want to post this update: "${input}"
 Generate the following as a valid JSON object:
 - "variant1": a creative image generation prompt that best visualizes the post idea.
 - "variant2": an engaging social media caption for the post (under 300 characters) using relevant emojis.
-- "variant3": 3-5 trending hashtags that match the post and user's interests.
+- "variant3": 3-5 trending hashtags that match the post and user's input.
 
 Respond with a valid JSON object only (no markdown or explanation), in this format:
 {

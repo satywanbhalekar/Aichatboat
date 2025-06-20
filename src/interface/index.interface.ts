@@ -25,13 +25,14 @@ export interface OnboardingSession {
 }
 
 
-export interface SocialAccount {
-  id: string;
+export interface UserSocialAccount {
+  id?: string;
   user_id: string;
-  platform: 'instagram' | 'facebook' | 'linkedin' | 'x' | string;
-  username: string;
-  access_token?: string;
-  connected_at?: string;
+  platform: "instagram" | "linkedin";
+  access_token: string;
+  account_name: string;
+  account_id: string;
+  created_at?: string;
 }
 
 export interface PostRequest {

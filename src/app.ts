@@ -5,6 +5,8 @@ import chatbotRoutes from './routes/chatbotRoutes';
 import profileRoutes from './routes/profileRoutes';
 import imageGenRoutes from './routes/imageGenRoutes'; 
 import onboardingRoutes from './routes/onboardingRoutes'; 
+import socialAccountsRoutes from './routes/userSocialAccounts.routes';
+
 const app = express();
 const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(",") || [];
  
@@ -67,6 +69,7 @@ app.use('/api/profile', profileRoutes);
 app.use('/api/chatbot', chatbotRoutes);
 app.use('/api/image', imageGenRoutes);
 app.use('/api/onboard', onboardingRoutes);
+app.use('/api/social-accounts', socialAccountsRoutes);
 //app.use("/api/v1/thoughtspot", authenticateJWT, thoughtspotRoutes);
 
 
