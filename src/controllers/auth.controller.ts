@@ -13,10 +13,9 @@ export class AuthController {
   static async handleInstagramCallback(req: Request, res: Response) {
     try {
       const { code } = req.query;
-      const userId = req.user?.id || req.session?.userId; // However you get user ID
-      
+      const userId = (req as any).user?.id;
       if (!code || !userId) {
-        return res.status(400).json({ error: 'Missing code or user not authenticated' });
+         res.status(400).json({ error: 'Missing code or user not authenticated' });
       }
 
       // Get access token
@@ -54,10 +53,10 @@ export class AuthController {
   static async handleLinkedInCallback(req: Request, res: Response) {
     try {
       const { code } = req.query;
-      const userId = req.user?.id || req.session?.userId; // However you get user ID
+      const userId = (req as any).user?.id;
       
       if (!code || !userId) {
-        return res.status(400).json({ error: 'Missing code or user not authenticated' });
+         res.status(400).json({ error: 'Missing code or user not authenticated' });
       }
 
       // Get access token

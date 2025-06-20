@@ -1,6 +1,7 @@
 import app from "./app";
 import env from "./config/env";
 import { generateImageFromPrompt } from "./utils/img";
+import { generateImageFromGemini } from "./utils/stabilityClient";
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 // const interval = setInterval(async () => {
@@ -28,14 +29,16 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 // }, 10000); // ⏱️ safer: call once every 10 seconds to avoid API rate limits
 
 // setInterval(() => {
-//   generateImageFromPrompt("ganesh")
-//   .then((imgBuffer) => {
+//   //generateImageFromPrompt("ganesh")
+//   generateImageFromGemini("ganesh")
+//  .then((imgBuffer) => {
 //     console.log("Image Buffer received:", imgBuffer);
 //   })
 //   .catch((error) => {
 //     console.error(error);
 //   });
 // }, 1000);
+
 
 app.listen(env.PORT || 3010, () => {
   console.log(`Server running on port ${env.PORT}`);

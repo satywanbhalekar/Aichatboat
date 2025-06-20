@@ -3,10 +3,11 @@ import { UserSocialAccountsController } from "../controllers/userSocialAccounts.
 
 const router = Router();
 
-// Connect Social Media Account
+// Your existing routes
 router.post("/connect", UserSocialAccountsController.connectAccount);
-
-// Get All Social Media Accounts for a User
 router.get("/user/:user_id", UserSocialAccountsController.getAccountsByUser);
+
+// ADD: New route to get OAuth URLs
+router.get("/oauth-urls", UserSocialAccountsController.getOAuthUrls);
 
 export default router;
