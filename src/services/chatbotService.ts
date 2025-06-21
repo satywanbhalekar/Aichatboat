@@ -61,14 +61,14 @@
 
 
 import { PostDao } from "../dao/postDao";
-import { ProfileDao } from "../dao/profileDao";
+import { OnboardingDao } from "../dao/OnboardingDao";
 import { PostRequest } from "../interface/index.interface";
 import { generatePostWithGemini } from "../utils/geminiClient"; // Text generation
 import { generateImageFromGemini } from "../utils/stabilityClient"; // New Gemini Image generation
 
 export class ChatbotService {
   static async generatePost(session_id: string, input: string): Promise<PostRequest> {
-    const profile = await ProfileDao.getProfileBysession_id(session_id);
+    const profile = await OnboardingDao.getProfileBysession_id(session_id);
 
     if (!profile) {
       throw new Error("User profile not found.");

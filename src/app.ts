@@ -2,7 +2,6 @@ import express from "express";
 import cors from 'cors';
 import helmet from "helmet";
 import chatbotRoutes from './routes/chatbotRoutes';
-import profileRoutes from './routes/profileRoutes';
 import imageGenRoutes from './routes/imageGenRoutes'; 
 import onboardingRoutes from './routes/onboardingRoutes'; 
 import socialAccountsRoutes from './routes/userSocialAccounts.routes';
@@ -66,7 +65,6 @@ app.options("*", cors({
 }));
 app.use(express.json());
 // Simple logging middleware to log requests and responses data
-app.use('/api/profile', profileRoutes);
 app.use('/api/chatbot', chatbotRoutes);
 app.use('/api/image', imageGenRoutes);
 app.use('/api/onboard', onboardingRoutes);

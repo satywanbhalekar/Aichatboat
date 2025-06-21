@@ -42,45 +42,6 @@
 // }
 
 
-// import axios from 'axios';
-
-// const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-preview-image-generation:generateContent';
-// const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
-
-// export async function generateImageFromGemini(prompt: string): Promise<Buffer> {
-//   if (!GEMINI_API_KEY) {
-//     throw new Error('GEMINI_API_KEY is not set in environment');
-//   }
-
-//   const response = await axios.post(
-//     `${GEMINI_API_URL}?key=${GEMINI_API_KEY}`,
-//     {
-//       contents: [
-//         {
-//           parts: [{ text: prompt }]
-//         }
-//       ],
-//       generationConfig: {
-//         responseModalities: ["TEXT", "IMAGE"]
-//       }
-//     },
-//     {
-//       headers: {
-//         'Content-Type': 'application/json',
-//       },
-//     }
-//   );
-
-//   // Check response structure
-//   const imageBase64 = response.data?.candidates?.[0]?.image?.base64;
-
-//   if (!imageBase64) {
-//     throw new Error('Image not returned from Gemini');
-//   }
-
-//   return Buffer.from(imageBase64, 'base64');
-// }
-
 import axios from 'axios';
 
 const GEMINI_IMAGE_API = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-preview-image-generation:generateContent';

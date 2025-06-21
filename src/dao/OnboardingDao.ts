@@ -1,5 +1,5 @@
 import {supabase} from '../config/db';
-import { UserProfile } from '../interface/index.interface';
+import { OnboardingSession, UserProfile } from '../interface/index.interface';
 export class OnboardingDao {
 
     // static async findSessionByEmail(email: string, password: any) {
@@ -89,6 +89,17 @@ export class OnboardingDao {
         .eq("session_id", sessionId);
   
       if (error) throw new Error(error.message);
+    }
+
+    static async getProfileBysession_id(session_id: string): Promise<OnboardingSession> {
+      const { data, error } = await supabase
+        .from('onboarding_sessions')
+        .select('*')
+        .eq('session_id', session_id)
+        .single();
+  
+      if (error) throw new Error(error.message);
+      return data;
     }
   }
   
