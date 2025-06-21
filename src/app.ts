@@ -66,7 +66,7 @@ app.options("*", cors({
 app.use(express.json());
 // Simple logging middleware to log requests and responses data
 app.use('/api/chatbot',authenticateToken, chatbotRoutes);
-app.use('/api/onboard', authenticateToken,onboardingRoutes);
+app.use('/api/onboard',onboardingRoutes);
 app.use('/api/social-accounts', socialAccountsRoutes);
 app.use('/api/auth', authRoutes);
 //app.use("/api/v1/thoughtspot", authenticateJWT, thoughtspotRoutes);
