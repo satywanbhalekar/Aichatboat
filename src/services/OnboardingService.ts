@@ -66,8 +66,66 @@ export class OnboardingService {
   }
 
 
+  // static async startSession(email: string, full_name: string, password: string) {
+  //   // Step 1: Check if email exists regardless of password
+  //   const { data: emailCheckData, error: emailCheckError } = await supabase
+  //     .from("onboarding_sessions")
+  //     .select("*")
+  //     .eq("email", email)
+  //     .order("created_at", { ascending: false })
+  //     .limit(1)
+  //     .single();
+  //     const token = jwt.sign(
+  //       { session_id: newSessionId, email },
+  //       process.env.JWT_SECRET || 'default-secret',
+  //       { expiresIn: '1h' }
+  //     );
+  //   if (emailCheckError && emailCheckError.code !== 'PGRST116') {
+  //     throw new Error(emailCheckError.message);
+  //   }
+
+  //   // Step 2: Email exists
+  //   if (emailCheckData) {
+  //     console.log(emailCheckData);
+  //     console.log(password);
+
+  //     if (emailCheckData.password === password) {
+  //       // ✅ Password match: login
+  //       if (emailCheckData.step === 'complete') {
+  //         return {
+  //           session_id: emailCheckData.session_id,
+  //           message: `Welcome back, ${emailCheckData.full_name || 'User'}! You’re already onboarded.`,
+  //           token
+  //         };
+  //       } else {
+  //         return {
+  //           session_id: emailCheckData.session_id,
+  //           message: `Welcome back, ${emailCheckData.full_name || 'User'}! Let’s continue onboarding. Your current step is: ${emailCheckData.step}`,
+  //           token
+  //         };
+  //       }
+  //     } else {
+  //       // ❌ Password doesn't match
+  //       return {
+  //         error: "Email already used. Please log in."
+  //       };
+  //     }
+  //   }
+
+  //   // Step 3: Email is new — create onboarding session
+
+  //   const hashedPassword = await bcrypt.hash(password, 10); // 10 salt rounds
+  //   const newSessionId = await OnboardingDao.createSessionWithEmail(email, full_name, hashedPassword);
+    
+  //   return {
+  //     session_id: newSessionId,
+  //     full_name: full_name,
+  //     // message: `Welcome ${full_name}! Let’s begin your onboarding.`
+  //     massage: "success"
+  //   };
+  // }
+
   static async startSession(email: string, full_name: string, password: string) {
-    // Step 1: Check if email exists regardless of password
     const { data: emailCheckData, error: emailCheckError } = await supabase
       .from("onboarding_sessions")
       .select("*")
@@ -75,51 +133,37 @@ export class OnboardingService {
       .order("created_at", { ascending: false })
       .limit(1)
       .single();
-
+  
     if (emailCheckError && emailCheckError.code !== 'PGRST116') {
       throw new Error(emailCheckError.message);
     }
-
-    // Step 2: Email exists
+  
     if (emailCheckData) {
-      console.log(emailCheckData);
-      console.log(password);
-
-      if (emailCheckData.password === password) {
-        // ✅ Password match: login
-        if (emailCheckData.step === 'complete') {
-          return {
-            session_id: emailCheckData.session_id,
-            message: `Welcome back, ${emailCheckData.full_name || 'User'}! You’re already onboarded.`
-          };
-        } else {
-          return {
-            session_id: emailCheckData.session_id,
-            message: `Welcome back, ${emailCheckData.full_name || 'User'}! Let’s continue onboarding. Your current step is: ${emailCheckData.step}`
-          };
-        }
-      } else {
-        // ❌ Password doesn't match
-        return {
-          error: "Email already used. Please log in."
-        };
-      }
+      return {
+        error: "Email already used. Please log in."
+      };
     }
-
-    // Step 3: Email is new — create onboarding session
-
-    const hashedPassword = await bcrypt.hash(password, 10); // 10 salt rounds
+  
+    // Hash password
+    const hashedPassword = await bcrypt.hash(password, 10);
+  
     const newSessionId = await OnboardingDao.createSessionWithEmail(email, full_name, hashedPassword);
-    
+  
+    // Generate token
+    const token = jwt.sign(
+      { session_id: newSessionId, email },
+      process.env.JWT_SECRET || 'default-secret',
+      { expiresIn: '1h' }
+    );
+  
     return {
       session_id: newSessionId,
       full_name: full_name,
-      // message: `Welcome ${full_name}! Let’s begin your onboarding.`
-      massage: "success"
+      token,
+      message: "Signup successful"
     };
   }
-
-
+  
 
   static async handleInput(sessionId: string | null, input: string | Record<string, any>) {
     console.log("👉 Input received:", input);
