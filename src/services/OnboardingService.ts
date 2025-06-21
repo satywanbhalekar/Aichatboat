@@ -1,30 +1,9 @@
 import { supabase } from '../config/db';
 import { OnboardingDao } from '../dao/OnboardingDao';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 export class OnboardingService {
 
-  // static async startSession(email: string, full_name: string, password: any) {
-  //     const existing = await OnboardingDao.findSessionByEmail(email,password);
-
-  //     if (existing && existing.step === 'complete') {
-  //       return {
-  //         session_id: existing.session_id,
-  //         message: `Welcome back, ${existing.full_name || 'User'}! You’re already onboarded.`
-  //       };
-  //     }
-
-  //     if (existing) {
-  //       return {
-  //         session_id: existing.session_id,
-  //         message: `Welcome back, ${existing.full_name || 'User'}! Let’s continue onboarding. Your current step is: ${existing.step}`
-  //       };
-  //     }
-
-  //     const newSessionId = await OnboardingDao.createSessionWithEmail(email, full_name,password);
-  //     return {
-  //       session_id: newSessionId,
-  //       message: `Welcome ${full_name}! Let’s begin your onboarding. What's your profession?`
-  //     };
-  //   }
 
   static async startSessionforlogin(email: string, password: string) {
     // Step 1: Check if email exists regardless of password
@@ -44,22 +23,29 @@ export class OnboardingService {
     if (emailCheckData) {
       console.log(emailCheckData);
       console.log(password);
-
-      if (emailCheckData.password === password) {
+      const isMatch = await bcrypt.compare(password, emailCheckData.password);
+      const token = jwt.sign(
+        { session_id: emailCheckData.session_id, email: emailCheckData.email },
+        process.env.JWT_SECRET || 'default-secret', // Replace with env var in production
+        { expiresIn: '1h' }
+      );
+      if (isMatch) {
         // ✅ Password match: login
         if (emailCheckData.step === 'complete') {
           return {
             session_id: emailCheckData.session_id,
             full_name: emailCheckData.full_name,
             //message: `Welcome back, ${emailCheckData.full_name || 'User'}! You’re already onboarded.`
-            message: "login success"
+            message: "login success",
+            token
           };
         } else {
           return {
             session_id: emailCheckData.session_id,
             full_name: emailCheckData.full_name,
             // message: `Welcome back, ${emailCheckData.full_name || 'User'}! Let’s continue onboarding. Your current step is: ${emailCheckData.step}`
-            message: "login success"
+            message: "login success",
+            token
           };
         }
       } else {
@@ -121,7 +107,10 @@ export class OnboardingService {
     }
 
     // Step 3: Email is new — create onboarding session
-    const newSessionId = await OnboardingDao.createSessionWithEmail(email, full_name, password);
+
+    const hashedPassword = await bcrypt.hash(password, 10); // 10 salt rounds
+    const newSessionId = await OnboardingDao.createSessionWithEmail(email, full_name, hashedPassword);
+    
     return {
       session_id: newSessionId,
       full_name: full_name,

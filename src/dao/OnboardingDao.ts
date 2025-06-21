@@ -1,19 +1,6 @@
 import {supabase} from '../config/db';
 import { OnboardingSession, UserProfile } from '../interface/index.interface';
 export class OnboardingDao {
-
-    // static async findSessionByEmail(email: string, password: any) {
-    //     const { data, error } = await supabase
-    //       .from("onboarding_sessions")
-    //       .select("*")
-    //       .eq("email","password", email,password)
-    //       .order("created_at", { ascending: false })
-    //       .limit(1)
-    //       .single();
-    
-    //     if (error && error.code !== 'PGRST116') throw new Error(error.message);
-    //     return data;
-    //   }
     
     static async findSessionByEmail(email: string, password: string) {
       const { data, error } = await supabase
