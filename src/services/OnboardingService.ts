@@ -5,8 +5,68 @@ import jwt from 'jsonwebtoken';
 export class OnboardingService {
 
 
+  // static async startSessionforlogin(email: string, password: string) {
+  //   // Step 1: Check if email exists regardless of password
+  //   const { data: emailCheckData, error: emailCheckError } = await supabase
+  //     .from("onboarding_sessions")
+  //     .select("*")
+  //     .eq("email", email)
+  //     .order("created_at", { ascending: false })
+  //     .limit(1)
+  //     .single();
+
+  //   if (emailCheckError && emailCheckError.code !== 'PGRST116') {
+  //     throw new Error(emailCheckError.message);
+  //   }
+
+  //   // Step 2: Email exists
+  //   if (emailCheckData) {
+  //     console.log(emailCheckData);
+  //     console.log(password);
+  //     const isMatch = await bcrypt.compare(password, emailCheckData.password);
+  //     const token = jwt.sign(
+  //       { session_id: emailCheckData.session_id, email: emailCheckData.email },
+  //       process.env.JWT_SECRET || 'default-secret', // Replace with env var in production
+  //       { expiresIn: '1h' }
+  //     );
+  //     if (isMatch) {
+  //       // ✅ Password match: login
+  //       if (emailCheckData.step === 'complete') {
+  //         return {
+  //           session_id: emailCheckData.session_id,
+  //           full_name: emailCheckData.full_name,
+  //           //message: `Welcome back, ${emailCheckData.full_name || 'User'}! You’re already onboarded.`
+  //           message: "login success",
+  //           token
+  //         };
+  //       } else {
+  //         return {
+  //           session_id: emailCheckData.session_id,
+  //           full_name: emailCheckData.full_name,
+  //           // message: `Welcome back, ${emailCheckData.full_name || 'User'}! Let’s continue onboarding. Your current step is: ${emailCheckData.step}`
+  //           message: "login success",
+  //           token
+  //         };
+  //       }
+  //     } else {
+  //       // ❌ Password doesn't match
+  //       return {
+  //         error: "Invalid credentials"
+  //       };
+  //     }
+  //   }
+
+  //   // Step 3: Email is new — create onboarding session
+  //   const newSessionId = await OnboardingDao.createSessionWithEmaillogin(email, password);
+  //   return {
+  //     session_id: newSessionId,
+  //     // message: `Welcome ${full_name}! Let’s begin your onboarding.`
+  //     massage: "success"
+  //   };
+  // }
+
   static async startSessionforlogin(email: string, password: string) {
-    // Step 1: Check if email exists regardless of password
+    // Step 1: Check if email exists
     const { data: emailCheckData, error: emailCheckError } = await supabase
       .from("onboarding_sessions")
       .select("*")
@@ -14,57 +74,38 @@ export class OnboardingService {
       .order("created_at", { ascending: false })
       .limit(1)
       .single();
-
+  
     if (emailCheckError && emailCheckError.code !== 'PGRST116') {
       throw new Error(emailCheckError.message);
     }
-
-    // Step 2: Email exists
-    if (emailCheckData) {
-      console.log(emailCheckData);
-      console.log(password);
-      const isMatch = await bcrypt.compare(password, emailCheckData.password);
-      const token = jwt.sign(
-        { session_id: emailCheckData.session_id, email: emailCheckData.email },
-        process.env.JWT_SECRET || 'default-secret', // Replace with env var in production
-        { expiresIn: '1h' }
-      );
-      if (isMatch) {
-        // ✅ Password match: login
-        if (emailCheckData.step === 'complete') {
-          return {
-            session_id: emailCheckData.session_id,
-            full_name: emailCheckData.full_name,
-            //message: `Welcome back, ${emailCheckData.full_name || 'User'}! You’re already onboarded.`
-            message: "login success",
-            token
-          };
-        } else {
-          return {
-            session_id: emailCheckData.session_id,
-            full_name: emailCheckData.full_name,
-            // message: `Welcome back, ${emailCheckData.full_name || 'User'}! Let’s continue onboarding. Your current step is: ${emailCheckData.step}`
-            message: "login success",
-            token
-          };
-        }
-      } else {
-        // ❌ Password doesn't match
-        return {
-          error: "Invalid credentials"
-        };
-      }
+  
+    // ❌ Email not found
+    if (!emailCheckData) {
+      return {
+        error: "Email not found. Please sign up first."
+      };
     }
-
-    // Step 3: Email is new — create onboarding session
-    const newSessionId = await OnboardingDao.createSessionWithEmaillogin(email, password);
+  
+    // Step 2: Password check
+    const isMatch = await bcrypt.compare(password, emailCheckData.password);
+    if (!isMatch) {
+      return { error: "Invalid credentials" };
+    }
+  
+    // ✅ Login success
+    const token = jwt.sign(
+      { session_id: emailCheckData.session_id, email: emailCheckData.email },
+      process.env.JWT_SECRET || 'default-secret',
+      { expiresIn: '1h' }
+    );
+  
     return {
-      session_id: newSessionId,
-      // message: `Welcome ${full_name}! Let’s begin your onboarding.`
-      massage: "success"
+      session_id: emailCheckData.session_id,
+      full_name: emailCheckData.full_name,
+      token,
+      message: "login success"
     };
   }
-
 
   // static async startSession(email: string, full_name: string, password: string) {
   //   // Step 1: Check if email exists regardless of password

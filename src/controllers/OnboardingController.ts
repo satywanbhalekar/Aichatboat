@@ -37,22 +37,44 @@ export class OnboardingController {
     }
     
 
-    static async login(req: Request, res: Response) {
-        try {
-          const { email,password } = req.body;
-          console.log("email full_name",email,password);
+    // static async login(req: Request, res: Response) {
+    //     try {
+    //       const { email,password } = req.body;
+    //       console.log("email full_name",email,password);
           
-          if (!email  || !password) {
-             res.status(400).json({ error: "email and password are required" });
-          }
+    //       if (!email  || !password) {
+    //          res.status(400).json({ error: "email and password are required" });
+    //       }
     
-          const result = await OnboardingService.startSessionforlogin(email,password);
-          res.json(result);
-        } catch (err) {
-          res.status(500).json({ error: (err as Error).message });
+    //       const result = await OnboardingService.startSessionforlogin(email,password);
+    //       res.json(result);
+    //     } catch (err) {
+    //       res.status(500).json({ error: (err as Error).message });
+    //     }
+    //   }
+    static async login(req: Request, res: Response) {
+      try {
+        const allowedFields = ['email', 'password'];
+        const keys = Object.keys(req.body);
+    
+        // ❌ Reject any extra fields
+        const hasInvalidFields = keys.some(key => !allowedFields.includes(key));
+        if (hasInvalidFields) {
+           res.status(400).json({ error: 'Only email and password are allowed.' });
         }
+    
+        const { email, password } = req.body;
+    
+        if (!email || !password) {
+           res.status(400).json({ error: 'email and password are required' });
+        }
+    
+        const result = await OnboardingService.startSessionforlogin(email, password);
+        res.json(result);
+      } catch (err) {
+        res.status(500).json({ error: (err as Error).message });
       }
-
+    }
     static async signup(req: Request, res: Response) {
       try {
         const { email, full_name,password } = req.body;
